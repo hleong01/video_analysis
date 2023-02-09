@@ -42,7 +42,7 @@ def gen_frames():  # generate frame by frame from camera
 
         for (xA, yA, xB, yB) in boxes:
         # display the detected boxes in the colour picture
-            cv2.rectangle(frame, (xA, yA), (xB, yB),
+            frame = cv2.rectangle(frame, (xA, yA), (xB, yB),
                   (0, 255, 0), 2)
 
         # Write the output video
