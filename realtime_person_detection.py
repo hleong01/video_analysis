@@ -11,19 +11,9 @@ app = Flask(__name__)
 hog = cv2.HOGDescriptor()
 hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
 
-#cv2.startWindowThread()
-
 # open webcam video stream
-cap = cv2.VideoCapture(0)
-
-# the output will be written to output.avi
-"""
-out = cv2.VideoWriter(
-    'output.avi',
-    cv2.VideoWriter_fourcc(*'MJPG'),
-    15.,
-    (640,480))
-"""
+stream = os.environ.get('STREAM', 0)
+cap = cv2.VideoCapture(stream)
 
 def gen_frames():  # generate frame by frame from camera
     while(True):
@@ -46,28 +36,10 @@ def gen_frames():  # generate frame by frame from camera
             frame = cv2.rectangle(frame, (xA, yA), (xB, yB),
                   (0, 255, 0), 2)
 
-        # Write the output video
-        #out.write(frame.astype('uint8'))
-        # Display the resulting frame
-        #cv2.imshow('frame',frame)
-        #if cv2.waitKey(1) & 0xFF == ord('q'):
-        #break
         ret, buffer = cv2.imencode('.jpg', frame)
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')  # concat frame one by one and show result
-
-"""
-# When everything done, release the capture
-cap.release()
-# and release the output
-#out.release()
-# finally, close the window
-cv2.destroyAllWindows()
-cv2.waitKey(1)
-"""
-
-
 
 
 @app.route('/video_feed')
